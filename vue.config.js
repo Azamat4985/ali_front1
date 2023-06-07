@@ -8,5 +8,5 @@
 // })
 
 module.exports = {
-  publicPath: '/ali_front/'
+  publicPath: ''
 }
