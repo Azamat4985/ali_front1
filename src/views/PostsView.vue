@@ -143,7 +143,9 @@ export default {
         name: null,
         createdAt: null,
 
-        ranges: {}
+        text: null,
+
+        ranges: {},
       },
     };
   },
@@ -155,22 +157,22 @@ export default {
       let filteredPosts = [];
       let filters = structuredClone(this.filters);
       for (const key in filters) {
-        if (filters[key] == null || filters[key] == '') {
+        if (filters[key] == null || filters[key] == "") {
           delete filters[key];
         }
       }
 
       for (const key in filters) {
-        let keyName = key.split('_');
-        if(keyName.includes('from') || keyName.includes('to')){
+        let keyName = key.split("_");
+        if (keyName.includes("from") || keyName.includes("to")) {
           filters.ranges[key] = filters[key];
           delete filters[key];
         }
       }
 
       for (const post of this.posts) {
-        if(!this.checkFilters(post, filters)){
-          filteredPosts.push(post)
+        if (!this.checkFilters(post, filters)) {
+          filteredPosts.push(post);
         }
       }
 
@@ -187,18 +189,30 @@ export default {
       console.log(filters);
       let toDelete = false;
       for (const key in filters) {
-        if(post[key] != filters[key] && key != 'ranges' && key != 'createdAt'){
+        if (
+          post[key] != filters[key] &&
+          key != "ranges" &&
+          key != "createdAt" &&
+          key != "text"
+        ) {
           toDelete = true;
         }
-        if(key == 'createdAt'){
+        if (key == "text") {
+          if (
+            !post.description.toLowerCase().includes(filters[key].toLowerCase())
+          ) {
+            toDelete = true;
+          }
+        }
+        if (key == "createdAt") {
           let postDate = new Date(post.createdAt);
-          let postMonth = postDate.getMonth()+1;
-          if(postMonth < 10){ 
-            postMonth = `0${postMonth}`
+          let postMonth = postDate.getMonth() + 1;
+          if (postMonth < 10) {
+            postMonth = `0${postMonth}`;
           }
           let postDay = postDate.getDate();
-          if(postDay < 10){ 
-            postDay = `0${postDay}`
+          if (postDay < 10) {
+            postDay = `0${postDay}`;
           }
           let postDateString = `${postDate.getFullYear()}-${postMonth}-${postDay}`;
           console.log(postDateString, filters[key]);
@@ -208,24 +222,28 @@ export default {
         }
       }
       for (const key in filters.ranges) {
-        let field = key.split('_');
-        let fieldName = key.split('_')[0]
-        if(field.includes('from')){
-          if(filters.ranges[key] > post[fieldName]){
+        let field = key.split("_");
+        let fieldName = key.split("_")[0];
+        if (field.includes("from")) {
+          if (filters.ranges[key] > post[fieldName]) {
             toDelete = true;
           }
         }
-        if(field.includes('to')){
-          if(filters.ranges[key] < post[fieldName]){
+        if (field.includes("to")) {
+          if (filters.ranges[key] < post[fieldName]) {
             toDelete = true;
           }
         }
       }
-      return toDelete
+      return toDelete;
     },
     async reloadPosts() {
+      let formData = new FormData();
+      formData.append("role", this.$store.getters.getRole);
+      formData.append("name", this.$store.getters.getName);
       await fetch(`${process.env.VUE_APP_SERVER_URL}/getPosts`, {
         method: "POST",
+        body: formData
       }).then(async (res) => {
         this.posts = await res.json();
         this.ready = true;

@@ -92,13 +92,19 @@
 
           <div
             class="d-flex flex-column col-5 me-5 mb-3"
-            v-if="fields.city == 'Астана' && fields.type != 'Авто'"
+            v-if="
+              (fields.city == 'Астана' ||
+                fields.city == 'Алматы' ||
+                fields.city == 'Шымкент' ||
+                fields.city == 'Караганда') &&
+              fields.type != 'Авто'
+            "
           >
             <label for="district" class="fs-5 mb-2">Район</label>
             <select class="input" id="district" v-model="fields.district">
               <option
                 :value="district"
-                v-for="district in districts"
+                v-for="district in getDisctrics()"
                 :key="district"
               >
                 {{ district }}
@@ -124,7 +130,7 @@
 
           <div
             class="d-flex flex-column col-5 me-5 mb-3"
-            v-if="fields.type != 'Авто'"
+            v-if="fields.type != 'Авто' && fields.type != 'Участок'"
           >
             <label for="adress" class="fs-5 mb-2">Год постройки</label>
             <input type="number" class="input" v-model="fields.built_year" />
@@ -178,6 +184,17 @@
           >
             <label for="adress" class="fs-5 mb-2">Балкон</label>
             <select name="" id="" class="input" v-model="fields.balcon">
+              <option value="да">Да</option>
+              <option value="нет">Нет</option>
+            </select>
+          </div>
+
+          <div
+            class="d-flex flex-column col-5 me-5 mb-3"
+            v-if="fields.type == 'Участок'"
+          >
+            <label for="adress" class="fs-5 mb-2">Есть ли постройки</label>
+            <select name="" id="" class="input" v-model="fields.any_buildings">
               <option value="да">Да</option>
               <option value="нет">Нет</option>
             </select>
@@ -268,6 +285,7 @@
               fields.type == 'Дом' ||
               fields.type == 'Участок' ||
               fields.type == 'Завод' ||
+              fields.type == 'База/Склад' ||
               fields.type == 'БЦ' ||
               fields.type == 'Гостиница'
             "
@@ -310,6 +328,7 @@
           >
             <label for="adress" class="fs-5 mb-2">Проект</label>
             <select name="" id="" class="input" v-model="fields.project">
+              <option value="нет">нет</option>
               <option value="эскизник">эскизник</option>
               <option value="разрабатывается">разрабатывается</option>
               <option value="прошел экспертизу">прошел экспертизу</option>
@@ -392,10 +411,8 @@
             class="d-flex flex-column col-5 me-5 mb-3"
             v-if="fields.type == 'Завод'"
           >
-            <label for="adress" class="fs-5 mb-2"
-              >Производительность (тонн)</label
-            >
-            <input type="number" class="input" v-model="fields.performance" />
+            <label for="adress" class="fs-5 mb-2">Производство</label>
+            <input type="text" class="input" v-model="fields.production" />
           </div>
 
           <div
@@ -675,13 +692,13 @@
 
           <div
             class="d-flex flex-column col-3 me-5 mb-3"
-            v-if="fields.ex_city == 'Астана' && fields.ex_type != 'Авто'"
+            v-if="(fields.ex_city == 'Астана' || fields.ex_city == 'Алматы' || fields.ex_city == 'Шымкент' || fields.ex_city == 'Караганда') && fields.ex_type != 'Авто'"
           >
             <label for="district" class="fs-5 mb-2">Район</label>
             <select class="input" id="district" v-model="fields.ex_district">
               <option
                 :value="district"
-                v-for="district in districts"
+                v-for="district in getDisctrics()"
                 :key="district"
               >
                 {{ district }}
@@ -699,10 +716,34 @@
 
           <div
             class="d-flex flex-column col-3 me-5 mb-3"
-            v-if="fields.ex_type != 'Авто'"
+            v-if="fields.ex_type != 'Авто' && fields.ex_type != 'Участок'"
           >
             <label for="adress" class="fs-5 mb-2">Год постройки</label>
-            <input type="number" class="input" v-model="fields.ex_built_year" />
+            <div class="d-flex align-items-center">
+              <p>от</p>
+              <input
+                type="number"
+                class="input me-3 col-5"
+                v-model="fields.ex_built_year_from"
+              />
+              <p>до</p>
+              <input
+                type="number"
+                class="input col-5"
+                v-model="fields.ex_built_year_to"
+              />
+            </div>
+          </div>
+
+          <div
+            class="d-flex flex-column col-3 me-5 mb-3"
+            v-if="fields.ex_type == 'Участок'"
+          >
+            <label for="adress" class="fs-5 mb-2">Есть ли постройки</label>
+            <select name="" id="" class="input" v-model="fields.ex_any_buildings">
+              <option value="да">Да</option>
+              <option value="нет">Нет</option>
+            </select>
           </div>
 
           <div
@@ -718,7 +759,20 @@
             v-if="fields.ex_type == 'Квартира' || fields.ex_type == 'Дом'"
           >
             <label for="adress" class="fs-5 mb-2">Количество комнат</label>
-            <input type="number" class="input" v-model="fields.ex_rooms" />
+            <div class="d-flex align-items-center">
+              <p>от</p>
+              <input
+                type="number"
+                class="input me-3 col-5"
+                v-model="fields.ex_rooms_from"
+              />
+              <p>до</p>
+              <input
+                type="number"
+                class="input col-5"
+                v-model="fields.ex_rooms_to"
+              />
+            </div>
           </div>
 
           <div
@@ -757,7 +811,20 @@
             <label for="adress" class="fs-6 mb-2"
               >Высота потолков (в метрах)</label
             >
-            <input type="number" class="input" v-model="fields.ex_height" />
+            <div class="d-flex align-items-center">
+              <p>от</p>
+              <input
+                type="number"
+                class="input me-3 col-5"
+                v-model="fields.ex_height_from"
+              />
+              <p>до</p>
+              <input
+                type="number"
+                class="input col-5"
+                v-model="fields.ex_height_to"
+              />
+            </div>
           </div>
 
           <div
@@ -934,6 +1001,7 @@
           >
             <label for="adress" class="fs-5 mb-2">Проект</label>
             <select name="" id="" class="input" v-model="fields.ex_project">
+              <option value="нет">нет</option>
               <option value="эскизник">эскизник</option>
               <option value="разрабатывается">разрабатывается</option>
               <option value="прошел экспертизу">прошел экспертизу</option>
@@ -958,9 +1026,7 @@
 
           <div
             class="d-flex flex-column col-3 me-5 mb-3"
-            v-if="
-              fields.ex_type == 'БЦ' || fields.ex_type == 'База/Склад'
-            "
+            v-if="fields.ex_type == 'БЦ' || fields.ex_type == 'База/Склад'"
           >
             <label for="adress" class="fs-5 mb-2">Площадь офисов (м²)</label>
             <div class="d-flex align-items-center">
@@ -1026,7 +1092,7 @@
             class="d-flex flex-column col-3 me-5 mb-3"
             v-if="fields.ex_type == 'База/Склад'"
           >
-          <label for="adress" class="fs-5 mb-2">Электроэнергия (кВт)</label>
+            <label for="adress" class="fs-5 mb-2">Электроэнергия (кВт)</label>
             <div class="d-flex align-items-center">
               <p>от</p>
               <input
@@ -1064,22 +1130,13 @@
             v-if="fields.ex_type == 'Завод'"
           >
             <label for="adress" class="fs-5 mb-2"
-              >Производительность (тонн)</label
+              >Производство</label
             >
-            <div class="d-flex align-items-center">
-              <p>от</p>
-              <input
-                type="number"
-                class="input me-3 col-5"
-                v-model="fields.ex_performance_from"
-              />
-              <p>до</p>
-              <input
-                type="number"
-                class="input col-5"
-                v-model="fields.ex_performance_to"
-              />
-            </div>
+            <input
+              type="text"
+              class="input me-3"
+              v-model="fields.ex_production"
+            />
           </div>
 
           <div
@@ -1197,9 +1254,7 @@
 
           <div
             class="d-flex flex-column col-3 me-5 mb-3"
-            v-if="
-              fields.ex_type == 'БЦ' || fields.ex_type == 'Гостиница'
-            "
+            v-if="fields.ex_type == 'БЦ' || fields.ex_type == 'Гостиница'"
           >
             <label for="adress" class="fs-5 mb-2"
               >Кол-во парковочных мест</label
@@ -1268,17 +1323,30 @@
             <label for="adress" class="fs-5 mb-2">ФИО клиента</label>
             <input type="text" class="input" v-model="fields.client_fio" />
           </div>
-          <div class="d-flex flex-column col-3 me-5 mb-3">
-            <label for="adress" class="fs-5 mb-2">Номер клиента</label>
+          <div class="d-flex flex-column col-2 me-3 mb-3">
+            <label for="adress" class="fs-5 mb-2">Номер клиента 1</label>
             <div class="d-flex align-items-center">
               <p class="me-1">+7</p>
               <input
                 type="number"
                 class="input"
-                v-model="fields.client_number"
+                v-model="fields.client_number_1"
               />
             </div>
           </div>
+          <div class="d-flex flex-column col-3 me-5 mb-3">
+            <label for="adress" class="fs-5 mb-2">Номер клиента 2</label>
+            <div class="d-flex align-items-center">
+              <p class="me-1">+7</p>
+              <input
+                type="number"
+                class="input"
+                v-model="fields.client_number_2"
+              />
+            </div>
+          </div>
+
+
         </div>
       </div>
     </div>
@@ -1318,7 +1386,27 @@ export default {
         "БЦ",
         "Гостиница",
       ],
-      districts: ["Сарыарка", "Байконур", "Алматы", "Есиль"],
+      districts: {
+        Астана: ["Сарыарка", "Байконур", "Алматы", "Есиль"],
+        Алматы: [
+          "Алатауский",
+          "Алмалинский",
+          "Ауэзовский",
+          "Бостандыкский",
+          "Жетысуский",
+          "Медеуский",
+          "Наурызбайский",
+          "Турксибский",
+        ],
+        Шымкент: ["Абайский", "Аль-Фарабийский", "Енбекшинский", "Каратауский"],
+        Караганда: [
+          "Казыбекбийский",
+          "Майкудук",
+          "Район Алихана Бокейханова",
+          "Старая Тихоновка",
+          "Юго-Восток",
+        ],
+      },
       fields: {
         email: "",
         name: "",
@@ -1350,10 +1438,11 @@ export default {
         car_parking: "есть",
 
         uchastok: 0,
+        any_buildings: "нет",
 
         purpose: "",
         pdp: null,
-        project: "прошел экспертизу",
+        project: "нет",
         uchastok_type: "делимый",
 
         office_area: 0,
@@ -1363,7 +1452,7 @@ export default {
         electricity: 0,
         transformator: "есть",
 
-        performance: 0,
+        production: "",
         mobility: "нет",
 
         auto_class: "легковые",
@@ -1388,12 +1477,15 @@ export default {
         ex_district: "",
         ex_adress: "",
         ex_complex: "",
-        ex_built_year: null,
+        ex_built_year_from: null,
+        ex_built_year_to: null,
         ex_class: "",
-        ex_rooms: 1,
+        ex_rooms_from: 1,
+        ex_rooms_to: 2,
         ex_area_from: 0,
         ex_area_to: 0,
-        ex_height: 0,
+        ex_height_from: 2.7,
+        ex_height_to: 3,
         ex_balcon: "да",
         ex_toilet: "раздельный",
         ex_otdelka: "Черновая",
@@ -1409,10 +1501,11 @@ export default {
 
         ex_uchastok_from: null,
         ex_uchastok_to: null,
+        ex_any_buildings: "нет",
 
         ex_purpose: "",
         ex_pdp: null,
-        ex_project: "прошел экспертизу",
+        ex_project: "нет",
         ex_uchastok_type: "делимый",
 
         ex_office_area_from: null,
@@ -1425,8 +1518,7 @@ export default {
         ex_electricity_to: null,
         ex_transformator: "есть",
 
-        ex_performance_from: null,
-        ex_performance_to: null,
+        ex_production: "",
         ex_mobility: "да",
 
         ex_auto_class: "легковые",
@@ -1452,7 +1544,8 @@ export default {
         // ===============
 
         client_fio: "",
-        client_number: null,
+        client_number_1: null,
+        client_number_2: null,
       },
     };
   },
@@ -1560,12 +1653,9 @@ export default {
         }).then(async (res) => {
           let response = await res.json();
           if (response.info == "updated") {
-            this.$toast.success(
-              "Успешно обновлено!",
-              {
-                timeout: 3000,
-              }
-            );
+            this.$toast.success("Успешно обновлено!", {
+              timeout: 3000,
+            });
             router.push("/posts");
           }
         });
@@ -1620,9 +1710,13 @@ export default {
     getCities() {
       for (const key in regions) {
         if (Object.keys(regions[key])[0] == this.fields.region) {
+          this.fields.city = regions[key][this.fields.region][0];
           return regions[key][this.fields.region];
         }
       }
+    },
+    getDisctrics() {
+      return this.districts[this.fields.city];
     },
     onMainUpload(e) {
       console.log("ok");

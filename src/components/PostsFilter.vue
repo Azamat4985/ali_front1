@@ -656,7 +656,7 @@
 
         <hr style="border-color: #fff;">
 
-        <div class="d-flex mb-3">
+        <div class="d-flex mb-2">
           <div
             class="d-flex flex-column col-3 me-5 mb-2"
             v-if="myRole == 'admin'"
@@ -672,6 +672,15 @@
           >
             <label for="adress" class="fs-6 mb-1">Дата добавления</label>
             <input type="date" class="input" v-model="filters.createdAt">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div
+            class="d-flex flex-column col-3 me-5 mb-2"
+          >
+            <label for="adress" class="fs-6 mb-1">Поиск по тексту</label>
+            <input type="text" class="input" v-model="filters.text">
           </div>
         </div>
 

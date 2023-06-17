@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <div class="d-flex align-items-stretch mb-2 justify-content-between">
+    <div class="d-flex align-items-stretch mb-2 justify-content-between" v-if="ready">
       <div v-for="(item, index) in objects" :key="index">
         <div class="d-flex align-items-center">
           <div class="d-flex flex-column align-items-center" v-if="index != 0">
@@ -41,6 +41,10 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-center" v-if="!ready">
+      <p>Загрузка...</p>
     </div>
 
     <p style="font-size: 12px">
@@ -77,17 +81,17 @@ export default {
     async removeChain(id) {
       if (confirm("Вы уверены?")) {
         let formdata = new FormData();
-        formdata.append('chainId', id);
+        formdata.append("chainId", id);
         await fetch(`${process.env.VUE_APP_SERVER_URL}/removeChain`, {
-          method: 'post',
-          body: formdata
+          method: "post",
+          body: formdata,
         }).then(async (res) => {
           let data = await res.json();
-          if(data.info == 200){
+          if (data.info == 200) {
             this.$toast.success("Успешно удалено", { timeout: 3000 });
-              EventBus.$emit("updateView");
+            EventBus.$emit("updateView");
           }
-        })
+        });
       }
     },
     editChain(id) {

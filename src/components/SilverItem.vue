@@ -7,6 +7,7 @@
         <div
           class="item__photo item__photo--no"
           v-if="!item.initial_photo"
+          @click="$router.push(`/post/${item.initial}`)"
         ></div>
         <post-photo :id="item.initial" v-if="item.initial_photo" />
         <p>{{ initial_type }}</p>
@@ -45,6 +46,7 @@
         <div
           class="item__photo item__photo--no"
           v-if="!item.second_photo"
+          @click="$router.push(`/post/${item.second}`)"
         ></div>
         <post-photo :id="item.second" v-if="item.second_photo" />
         <p>{{ second_type }}</p>

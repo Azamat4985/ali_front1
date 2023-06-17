@@ -34,8 +34,21 @@
         <button class="btn favBtn me-1" @click="saveFav">
           <div class="favIcon" :class="{ 'favIcon--active': isFavData }"></div>
         </button>
-        <button class="btn delBtn" @click="deletePost">
+        <button class="btn delBtn" @click="deletePost" v-if="!delete_pending">
           <div class="delIcon"></div>
+        </button>
+        <button
+          class="btn delBtn"
+          @click="deletePost"
+          v-if="delete_pending"
+          disabled
+        >
+          <div
+            class="spinner-border spinner-border-sm text-white"
+            role="status"
+          >
+            <span class="visually-hidden">Loading...</span>
+          </div>
         </button>
       </div>
       <p class="post__date text-end">{{ formatDate(post.createdAt) }}</p>
@@ -53,6 +66,7 @@ export default {
     return {
       isFavData: false,
       mainPhoto_URL: null,
+      delete_pending: false,
     };
   },
   async mounted() {
@@ -106,6 +120,7 @@ export default {
     async deletePost() {
       event.stopPropagation();
       if (confirm("Вы уверены что хотите удалить объект?")) {
+        this.delete_pending = true;
         let formdata = new FormData();
         formdata.append("id", this.post._id);
         await fetch(`${process.env.VUE_APP_SERVER_URL}/deletePost`, {
@@ -113,6 +128,7 @@ export default {
           body: formdata,
         }).then(async (res) => {
           let data = await res.json();
+          this.delete_pending = false;
           if (data.info == 200) {
             this.$toast.success("Успешно удалено", { timeout: 3000 });
             EventBus.$emit("reloadPosts");
