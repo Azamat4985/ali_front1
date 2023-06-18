@@ -1,5 +1,5 @@
 <template>
-  <div class="loaderWrapper w-100 h-100">
+  <div class="loaderWrapper w-100 h-100 mh-100">
     <div class="w-100 h-100 d-flex justify-content-center loaderBox d-flex">
       <p class="tracking-in-expand fs-1 loaderText fw-bold">Ali-Group</p>
     </div>

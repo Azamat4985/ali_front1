@@ -4,8 +4,16 @@
       <p class="mb-2 fw-bold fs-4">{{ chain.name }}</p>
       <div class="d-flex align-items-center">
         <button class="editBtn me-2" @click="editChain(chain._id)">ред.</button>
-        <button class="removeBtn me-2" @click="removeChain(chain._id)">
+        <button class="removeBtn me-2" @click="removeChain(chain._id)" v-if="!pending">
           <img src="../assets/delete.png" alt="" width="20" />
+        </button>
+        <button class="removeBtn me-2" @click="removeChain(chain._id)" disabled v-if="pending">
+          <div
+            class="spinner-border spinner-border-sm text-white"
+            role="status"
+          >
+            <span class="visually-hidden">Loading...</span>
+          </div>
         </button>
       </div>
     </div>
@@ -75,20 +83,26 @@ export default {
       objects: [],
       ready: false,
       photos: [],
+      pending: false,
     };
   },
   methods: {
     async removeChain(id) {
       if (confirm("Вы уверены?")) {
+        this.pending = true;
         let formdata = new FormData();
         formdata.append("chainId", id);
         await fetch(`${process.env.VUE_APP_SERVER_URL}/removeChain`, {
           method: "post",
           body: formdata,
         }).then(async (res) => {
+          this.pending = false;
           let data = await res.json();
           if (data.info == 200) {
             this.$toast.success("Успешно удалено", { timeout: 3000 });
+            EventBus.$emit("updateView");
+          } else {
+            this.$toast.error("Произошла ошибка, повторите еще раз", { timeout: 3000 });
             EventBus.$emit("updateView");
           }
         });

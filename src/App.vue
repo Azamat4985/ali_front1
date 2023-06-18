@@ -67,6 +67,7 @@ export default {
           router.push("/auth");
           this.appReady = true;
         } else {
+          router.push("/posts");
           store.commit("setLogged", true);
           store.commit("setEmail", result.email);
           store.commit("setName", result.name);
