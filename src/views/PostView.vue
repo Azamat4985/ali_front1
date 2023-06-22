@@ -12,7 +12,15 @@
           <p>Менеджер: {{ fields.name }}</p>
         </div>
       </div>
-      <p class="fw-bold fs-3 mb-3 text-primary">{{ fields.price.toLocaleString('ru') }}₸</p>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="fw-bold fs-3 text-primary">{{ fields.price.toLocaleString('ru') }}₸</p>
+        <button
+          class="btn btn-primary me-1"
+          @click="$router.push(`/update/${id}`)"
+        >
+          Редактировать объект
+        </button>
+      </div>
       <div class="d-flex flex-wrap">
         <div
           class="imageWrapper d-flex flex-column justify-content-center me-3"
@@ -51,7 +59,8 @@
       <p class="mt-4 fs-3 fw-bold mb-2">Контакты клиента</p>
       <div class="d-flex">
         <p class="fw-bold me-5">ФИО клиента: {{ fields.client_fio }}</p>
-        <p class="fw-bold">Номер клиента: {{ fields.client_number }}</p>
+        <p class="fw-bold me-5">Номер клиента 1 : {{ fields.client_number_1 }}</p>
+        <p class="fw-bold me-5">Номер клиента 1 : {{ fields.client_number_2 }}</p>
       </div>
 
 

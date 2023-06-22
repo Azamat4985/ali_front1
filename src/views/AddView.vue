@@ -21,9 +21,21 @@
           <button class="btn successBtn" @click="nextStep" v-if="step != 3">
             Далее
           </button>
-          <button class="btn successBtn" @click="sendHandler" v-if="step == 3">
+          <button class="btn successBtn" @click="sendHandler" v-if="step == 3 && !isPending">
             Готово
           </button>
+          <button
+          class="btn successBtn"
+          v-if="isPending"
+          disabled
+        >
+          <div
+            class="spinner-border spinner-border-sm text-white"
+            role="status"
+          >
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </button>
         </div>
       </div>
 
@@ -692,7 +704,13 @@
 
           <div
             class="d-flex flex-column col-3 me-5 mb-3"
-            v-if="(fields.ex_city == 'Астана' || fields.ex_city == 'Алматы' || fields.ex_city == 'Шымкент' || fields.ex_city == 'Караганда') && fields.ex_type != 'Авто'"
+            v-if="
+              (fields.ex_city == 'Астана' ||
+                fields.ex_city == 'Алматы' ||
+                fields.ex_city == 'Шымкент' ||
+                fields.ex_city == 'Караганда') &&
+              fields.ex_type != 'Авто'
+            "
           >
             <label for="district" class="fs-5 mb-2">Район</label>
             <select class="input" id="district" v-model="fields.ex_district">
@@ -740,7 +758,12 @@
             v-if="fields.ex_type == 'Участок'"
           >
             <label for="adress" class="fs-5 mb-2">Есть ли постройки</label>
-            <select name="" id="" class="input" v-model="fields.ex_any_buildings">
+            <select
+              name=""
+              id=""
+              class="input"
+              v-model="fields.ex_any_buildings"
+            >
               <option value="да">Да</option>
               <option value="нет">Нет</option>
             </select>
@@ -1129,9 +1152,7 @@
             class="d-flex flex-column col-3 me-5 mb-3"
             v-if="fields.ex_type == 'Завод'"
           >
-            <label for="adress" class="fs-5 mb-2"
-              >Производство</label
-            >
+            <label for="adress" class="fs-5 mb-2">Производство</label>
             <input
               type="text"
               class="input me-3"
@@ -1323,7 +1344,7 @@
             <label for="adress" class="fs-5 mb-2">ФИО клиента</label>
             <input type="text" class="input" v-model="fields.client_fio" />
           </div>
-          <div class="d-flex flex-column col-2 me-3 mb-3">
+          <div class="d-flex flex-column col-3 me-3 mb-3">
             <label for="adress" class="fs-5 mb-2">Номер клиента 1</label>
             <div class="d-flex align-items-center">
               <p class="me-1">+7</p>
@@ -1345,8 +1366,6 @@
               />
             </div>
           </div>
-
-
         </div>
       </div>
     </div>
@@ -1367,6 +1386,7 @@ export default {
     return {
       step: 1,
       isReady: false,
+      isPending: false,
       money: {
         decimal: ",",
         thousands: " ",
@@ -1631,6 +1651,7 @@ export default {
       this.fields.name = store.getters.getName;
       let data = JSON.stringify(this.fields);
       formdata.append("fields", data);
+      this.isPending = true;
 
       if (this.fields.mainPhoto != null) {
         let main_photo = await this.createFile(
@@ -1656,7 +1677,8 @@ export default {
             this.$toast.success("Успешно обновлено!", {
               timeout: 3000,
             });
-            router.push("/posts");
+            this.isPending = false;
+            router.go(-1);
           }
         });
       } else {
@@ -1667,6 +1689,7 @@ export default {
           this.$toast.success("Успешно добавлено!", {
             timeout: 3000,
           });
+          this.isPending = false;
           router.push("/posts");
         });
       }
