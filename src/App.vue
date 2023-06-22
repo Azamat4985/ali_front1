@@ -1,12 +1,17 @@
 <template>
   <div id="app">
     <Menu v-if="getLogged" />
-    <loader v-if="!appReady"/>
+    <loader v-if="!appReady" />
     <router-view v-if="appReady" />
 
-    <chain-modal v-if="showChainModal" :id="chainId"/>
+    <chain-modal v-if="showChainModal" :id="chainId" />
 
-    <objects-modal v-if="showObjectsModal" :lastObject="lastObject" :isEdit="isEdit" :replaceIndex="replaceIndex"/>
+    <objects-modal
+      v-if="showObjectsModal"
+      :lastObject="lastObject"
+      :isEdit="isEdit"
+      :replaceIndex="replaceIndex"
+    />
   </div>
 </template>
 
@@ -18,7 +23,7 @@ import { mapGetters } from "vuex";
 import ChainModal from "./components/ChainModal.vue";
 import { EventBus } from "./helpers/eventBus";
 import ObjectsModal from "./components/ObjectsModal.vue";
-import Loader from './components/Loader.vue';
+import Loader from "./components/Loader.vue";
 export default {
   data() {
     return {
@@ -67,7 +72,12 @@ export default {
           router.push("/auth");
           this.appReady = true;
         } else {
-          router.push("/posts");
+          let currentRoute = router.currentRoute.path;
+          if (currentRoute == "/") {
+            router.push("/posts");
+          } else {
+            router.push(currentRoute);
+          }
           store.commit("setLogged", true);
           store.commit("setEmail", result.email);
           store.commit("setName", result.name);
