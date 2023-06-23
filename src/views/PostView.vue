@@ -5,7 +5,7 @@
       <div class="d-flex align-items-center mb-3 justify-content-between"> 
         <div class="d-flex align-items-center">
           <p class="fw-bold fs-3 me-3">{{ fields.type }}</p>
-          <span class="our text-white">ali-group</span>
+          <span class="our text-white" v-if="fields.isOur == 'да'">ali-group</span>
         </div>
         <div class="d-flex align-items-center">
           <p class="me-3">Создано: {{ getProperDate(fields.createdAt) }}</p>

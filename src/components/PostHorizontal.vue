@@ -15,10 +15,10 @@
       <div class="d-flex flex-column">
         <p class="fw-bold">
           {{ post.type }}
-          <span v-if="post.type == 'Квартира' || post.type == 'Дом'"
-            >, {{ post.rooms }} комнат</span
-          >
           <span class="our ms-2" v-if="post.isOur == 'да'">ali-group</span>
+          <span v-if="post.isOur == 'нет'" class="fw-normal">
+            ➝ {{ post.ex_type }}</span
+          >
         </p>
         <p class="regionText mb-2">{{ post.region }}, {{ post.city }}</p>
         <div class="d-flex flex-wrap mb-2">
@@ -60,7 +60,7 @@
       </div>
       <div class="d-flex">
         <p class="post__date text-end me-3">{{ formatDate(post.createdAt) }}</p>
-        <p class="post__date text-end" style="width: 150px;">{{ post.name }}</p>
+        <p class="post__date text-end" style="width: 150px">{{ post.name }}</p>
       </div>
     </div>
   </div>
