@@ -1379,6 +1379,7 @@ import { Money } from "v-money";
 import router from "@/router";
 import store from "@/store";
 import Loader from "@/components/Loader.vue";
+import { EventBus } from '@/helpers/eventBus';
 
 export default {
   components: { Money, Loader },
@@ -1440,16 +1441,16 @@ export default {
         photos: [],
         adress: "",
         complex: "",
-        built_year: null,
+        built_year: '',
         class: "",
-        rooms: 1,
-        area: 0,
-        height: 2.7,
+        rooms: '',
+        area: '',
+        height: '',
         balcon: "да",
         toilet: "раздельный",
         otdelka: "чистовая",
-        floor: 1,
-        price: 0,
+        floor: '',
+        price: '',
         extra: [],
 
         first_line: "да",
@@ -1457,19 +1458,19 @@ export default {
         arendator: "нет",
         car_parking: "есть",
 
-        uchastok: 0,
+        uchastok: '',
         any_buildings: "нет",
 
         purpose: "",
-        pdp: null,
+        pdp: '',
         project: "нет",
         uchastok_type: "делимый",
 
-        office_area: 0,
-        warehouse_area: 0,
+        office_area: '',
+        warehouse_area: '',
         railroad: "есть",
         heating: "центральное",
-        electricity: 0,
+        electricity: '',
         transformator: "есть",
 
         production: "",
@@ -1479,15 +1480,15 @@ export default {
         marka: "Toyota",
         model: "Camry",
         auto_year: 2023,
-        probeg: 0,
+        probeg: '',
         cleared: "да",
 
-        floors_number: null,
-        offices_number: null,
-        parking_number: null,
+        floors_number: '',
+        offices_number: '',
+        parking_number: '',
 
-        hotel_rooms: null,
-        hotel_rooms_area: null,
+        hotel_rooms: '',
+        hotel_rooms_area: '',
 
         // ===========
 
@@ -1497,45 +1498,45 @@ export default {
         ex_district: "",
         ex_adress: "",
         ex_complex: "",
-        ex_built_year_from: null,
-        ex_built_year_to: null,
+        ex_built_year_from: '',
+        ex_built_year_to: '',
         ex_class: "",
-        ex_rooms_from: 1,
-        ex_rooms_to: 2,
-        ex_area_from: 0,
-        ex_area_to: 0,
-        ex_height_from: 2.7,
-        ex_height_to: 3,
+        ex_rooms_from: '',
+        ex_rooms_to: '',
+        ex_area_from: '',
+        ex_area_to: '',
+        ex_height_from: '',
+        ex_height_to: '',
         ex_balcon: "да",
         ex_toilet: "раздельный",
         ex_otdelka: "Черновая",
-        ex_floor_from: 1,
-        ex_floor_to: 1,
-        ex_price_from: 0,
-        ex_price_to: 0,
+        ex_floor_from: '',
+        ex_floor_to: '',
+        ex_price_from: '',
+        ex_price_to: '',
 
         ex_first_line: "да",
         ex_ready_business: "да",
         ex_arendator: "нет",
         ex_car_parking: "есть",
 
-        ex_uchastok_from: null,
-        ex_uchastok_to: null,
+        ex_uchastok_from: '',
+        ex_uchastok_to: '',
         ex_any_buildings: "нет",
 
         ex_purpose: "",
-        ex_pdp: null,
+        ex_pdp: '',
         ex_project: "нет",
         ex_uchastok_type: "делимый",
 
-        ex_office_area_from: null,
-        ex_office_area_to: null,
-        ex_warehouse_area_from: null,
-        ex_warehouse_area_to: null,
+        ex_office_area_from: '',
+        ex_office_area_to: '',
+        ex_warehouse_area_from: '',
+        ex_warehouse_area_to: '',
         ex_railroad: "есть",
         ex_heating: "центральное",
-        ex_electricity_from: null,
-        ex_electricity_to: null,
+        ex_electricity_from: '',
+        ex_electricity_to: '',
         ex_transformator: "есть",
 
         ex_production: "",
@@ -1544,28 +1545,28 @@ export default {
         ex_auto_class: "легковые",
         ex_marka: "Toyota",
         ex_model: "Camry",
-        ex_auto_year_from: null,
-        ex_auto_year_to: null,
-        ex_probeg: null,
+        ex_auto_year_from: '',
+        ex_auto_year_to: '',
+        ex_probeg: '',
         ex_cleared: "да",
 
-        ex_floors_number_from: null,
-        ex_floors_number_to: null,
-        ex_offices_number_from: null,
-        ex_offices_number_to: null,
-        ex_parking_number_from: null,
-        ex_parking_number_to: null,
+        ex_floors_number_from: '',
+        ex_floors_number_to: '',
+        ex_offices_number_from: '',
+        ex_offices_number_to: '',
+        ex_parking_number_from: '',
+        ex_parking_number_to: '',
 
-        ex_hotel_rooms_from: null,
-        ex_hotel_rooms_to: null,
-        ex_hotel_rooms_area_from: null,
-        ex_hotel_rooms_area_to: null,
+        ex_hotel_rooms_from: '',
+        ex_hotel_rooms_to: '',
+        ex_hotel_rooms_area_from: '',
+        ex_hotel_rooms_area_to: '',
 
         // ===============
 
         client_fio: "",
-        client_number_1: null,
-        client_number_2: null,
+        client_number_1: '',
+        client_number_2: '',
       },
     };
   },
@@ -1678,6 +1679,7 @@ export default {
               timeout: 3000,
             });
             this.isPending = false;
+            EventBus.$emit('reloadPosts')
             router.go(-1);
           }
         });

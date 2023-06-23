@@ -60,7 +60,7 @@
       </div>
       <div class="d-flex">
         <p class="post__date text-end me-3">{{ formatDate(post.createdAt) }}</p>
-        <p class="post__date text-end">{{ post.name }}</p>
+        <p class="post__date text-end" style="width: 150px;">{{ post.name }}</p>
       </div>
     </div>
   </div>

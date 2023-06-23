@@ -15,6 +15,7 @@
       <p class="fw-bold mb-2">
         {{ post.type }}
         <span class="our ms-2" v-if="post.isOur == 'да'">ali-group</span>
+        <span v-if="post.isOur == 'нет'" class="fw-normal"> ➝ {{ post.ex_type }}</span>
       </p>
       <div class="d-flex flex-wrap mb-2">
         <span v-for="extra in post.extra" :key="extra" class="extra">{{
