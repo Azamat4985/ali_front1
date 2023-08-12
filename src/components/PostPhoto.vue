@@ -1,36 +1,39 @@
 <template>
-  <div class="photoItem" :style="{ 'background-image': 'url(' + main_photo + ')' }" v-if="main_photo != null" @click="$router.push(`/post/${id}`)">
-
-  </div>
+  <div
+    class="photoItem"
+    :style="{ 'background-image': 'url(' + main_photo + ')' }"
+    v-if="main_photo != null"
+    @click="$router.push(`/post/${id}`)"
+  ></div>
 </template>
 
 <script>
-import store from '@/store';
+import store from "@/store";
 export default {
-  props: ['id'],
+  props: ["id"],
   data() {
     return {
-      main_photo: null
-    }
+      main_photo: null,
+    };
   },
-  async mounted(){
+  async mounted() {
     let formdata = new FormData();
-      formdata.append("email", store.getters.getEmail);
-      formdata.append("hash", store.getters.getHash);
-      formdata.append("id", this.id);
+    formdata.append("email", store.getters.getEmail);
+    formdata.append("hash", store.getters.getHash);
+    formdata.append("id", this.id);
 
-      await fetch(`${process.env.VUE_APP_SERVER_URL}/getMainPhoto`, {
-        method: "POST",
-        body: formdata,
-      }).then(async (res) => {
-        this.main_photo = URL.createObjectURL(await res.blob());
-      });
-  }
+    await fetch(`${process.env.VUE_APP_SERVER_URL}/getMainPhoto`, {
+      method: "POST",
+      body: formdata,
+    }).then(async (res) => {
+      this.main_photo = URL.createObjectURL(await res.blob());
+    });
+  },
 };
 </script>
 
 <style scoped>
-.photoItem:hover{
+.photoItem:hover {
   outline: 2px solid var(--link);
 }
 .photoItem {

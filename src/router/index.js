@@ -8,6 +8,7 @@ import PostView from '../views/PostView.vue'
 import FavsView from '../views/FavsView.vue'
 import ExchangeView from '../views/ExchangeView.vue'
 import ChainView from '../views/ChainView.vue'
+import AutoExchangeView from '../views/AutoExchangeView.vue'
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,11 @@ const routes = [
     path: '/post/:id',
     name: 'post',
     component: PostView,
+  },
+  {
+    path: '/exchange-chain-auto',
+    name: 'Exchange-chain-auto',
+    component: AutoExchangeView,
   }
 ]
 

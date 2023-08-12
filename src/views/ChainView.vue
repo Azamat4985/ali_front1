@@ -5,7 +5,7 @@
     <div v-if="ready">
       <div class="d-flex align-items-center justify-content-between mb-4">
         <p class="fs-3 fw-bold">Цепочки обменов</p>
-        <button class="btn successBtn" @click="showModal">
+        <button class="btn btn-outline-success myBtn" @click="showModal">
           Добавить цепочку +
         </button>
       </div>
@@ -40,10 +40,12 @@ export default {
       EventBus.$emit("openChainModal", null);
     },
     async updateView() {
+      this.ready = false;
       await fetch(`${process.env.VUE_APP_SERVER_URL}/getChains`, {
         method: "post",
       }).then(async (res) => {
         this.chains = await res.json();
+        this.ready = true;
       });
     },
   },

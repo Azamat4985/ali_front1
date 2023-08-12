@@ -9,7 +9,7 @@
           placeholder="Название цепочки..."
           v-model="name"
         />
-        <button class="btn btn-danger" @click="reset">Сбросить</button>
+        <button class="btn btn-outline-danger myBtn" @click="reset">Сбросить</button>
       </div>
 
       <div class="d-flex align-items-stretch mb-3">
@@ -51,7 +51,7 @@
 
       <div class="d-flex justify-content-end align-items-center">
         <p class="me-3">Вероятность обмена: {{ getProbabilty() }}%</p>
-        <button class="btn btn-primary" @click="save">Сохранить</button>
+        <button class="btn btn-outline-primary myBtn" @click="save">Сохранить</button>
       </div>
     </div>
   </div>

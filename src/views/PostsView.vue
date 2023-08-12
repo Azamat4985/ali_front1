@@ -37,7 +37,7 @@
           :myFavs="myFavs"
         />
       </div>
-      <div class="d-flex flex-column" v-if="view == 'list'">
+      <div class="d-flex flex-wrap" v-if="view == 'list'">
         <post-horizontal
           v-for="post in posts"
           :key="post.createdAt"

@@ -1,14 +1,15 @@
 <template>
   <div
-    class="d-flex postWrapper align-items-stretch position-relative"
-    v-if="ready"
+      v-if="ready"
+      class="d-flex postWrapper align-items-stretch position-relative"
   >
-    <div class="noPhoto" v-if="mainPhoto == null"></div>
-    <div
-      class="mainPhotoMini"
-      v-if="mainPhoto != null"
-      :style="{ 'background-image': 'url(' + mainPhoto + ')' }"
-    ></div>
+      <router-link :to="`/post/${post._id}`" v-if="mainPhoto == null" class="noPhoto"></router-link>
+      <router-link
+          :to="`/post/${post._id}`"
+          v-if="mainPhoto != null"
+          :style="{ 'background-image': 'url(' + mainPhoto + ')' }"
+          class="mainPhotoMini"
+      ></router-link>
 
     <div class="post">
       <p>
@@ -25,10 +26,11 @@
     </div>
   </div>
 </template>
-  
-  <script>
+
+<script>
 import store from "@/store";
-import { EventBus } from "@/helpers/eventBus";
+import {EventBus} from "@/helpers/eventBus";
+
 export default {
   props: ["object", "position"],
   data() {
@@ -61,7 +63,7 @@ export default {
     },
   },
   methods: {
-    deleteObject(){
+    deleteObject() {
       EventBus.$emit('deleteObject', this.position)
     },
     replaceObject() {
@@ -89,7 +91,7 @@ export default {
   },
 };
 </script>
-  
+
 <style scoped>
 .deleteObject {
   width: 18px;
@@ -98,6 +100,7 @@ export default {
   transition-duration: 0.2s;
   cursor: pointer;
 }
+
 .replace {
   width: 20px;
   height: 20px;
@@ -105,19 +108,23 @@ export default {
   transition-duration: 0.2s;
   cursor: pointer;
 }
+
 .replace:hover {
   background-image: url("../assets/replace_object_hover.svg");
 }
+
 .controls {
   position: absolute;
   right: 10px;
   top: 17%;
 }
+
 .our {
   padding: 2px;
   border-radius: 2px;
   background: rgba(255, 217, 0, 0.568);
 }
+
 .noPhoto {
   background-image: url("../assets/no_img.jpeg");
   background-repeat: no-repeat;
@@ -127,6 +134,7 @@ export default {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
+
 .mainPhotoMini {
   background-color: var(--bg);
   background-repeat: no-repeat;
@@ -136,14 +144,17 @@ export default {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
+
 .post {
-  background-color: #21252e;
+  background-color: var(--highlight);
+  border: 1px solid var(--border);
   padding: 5px 15px;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   width: 100%;
   position: relative;
 }
+
 .postWrapper {
   width: 230px;
   font-size: 12px;

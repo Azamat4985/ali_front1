@@ -11,7 +11,7 @@
         ></div>
         <post-photo :id="item.initial" v-if="item.initial_photo" />
         <p>{{ initial_type }}</p>
-        <p style="font-size: 8px">{{ item.initial }}</p>
+        <!-- <p style="font-size: 8px">{{ item.initial }}</p> -->
       </div>
 
       <div class="col-4 d-flex flex-column align-items-center">
@@ -50,7 +50,7 @@
         ></div>
         <post-photo :id="item.second" v-if="item.second_photo" />
         <p>{{ second_type }}</p>
-        <p style="font-size: 8px">{{ item.second }}</p>
+        <!-- <p style="font-size: 8px">{{ item.second }}</p> -->
       </div>
     </div>
   </div>

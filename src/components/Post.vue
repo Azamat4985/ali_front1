@@ -1,9 +1,9 @@
 <template>
-  <div
+  <router-link
     class="post me-3 mb-3 d-flex flex-column justify-content-between"
-    @click="$router.push(`/post/${post._id}`)"
+    :to="`/post/${post._id}`"
   >
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column align-items-start">
       <div
         class="post__img mb-2"
         :style="{ 'background-image': 'url(' + mainPhoto_URL + ')' }"
@@ -23,23 +23,23 @@
         }}</span>
       </div>
     </div>
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column align-items-start">
       <p class="fs-5 mb-2 fw-bold">{{ post.price.toLocaleString("ru") }} ₸</p>
       <div class="d-flex align-items-stretch mb-2">
-        <button
-          class="btn btn-primary me-1 flex-grow-1"
-          @click="$router.push(`/update/${post._id}`)"
+        <router-link
+          class="btn btn-outline-success myBtn me-1 flex-grow-1"
+          :to="`/update/${post._id}`"
         >
           Изменить
-        </button>
-        <button class="btn favBtn me-1" @click="saveFav">
+        </router-link>
+        <button class="btn btn-outline-primary myBtn me-1" @click.prevent="saveFav">
           <div class="favIcon" :class="{ 'favIcon--active': isFavData }"></div>
         </button>
-        <button class="btn delBtn" @click="deletePost" v-if="!delete_pending">
+        <button class="btn btn-outline-danger myBtn" @click.prevent="deletePost" v-if="!delete_pending">
           <div class="delIcon"></div>
         </button>
         <button
-          class="btn delBtn"
+          class="btn btn-outline-danger myBtn"
           @click="deletePost"
           v-if="delete_pending"
           disabled
@@ -55,7 +55,7 @@
       <p class="post__date text-end">{{ formatDate(post.createdAt) }}</p>
       <p class="post__date text-end">{{ post.name }}</p>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>
@@ -182,7 +182,7 @@ export default {
   transition-duration: 0.1s;
 }
 .favBtn {
-  background: #313745;
+  background: var(--highlight);
   transition-duration: 0.1s;
 }
 .favBtn:hover {
@@ -194,7 +194,8 @@ export default {
 .post {
   padding: 15px;
   border-radius: 10px;
-  background-color: #21252e;
+  background-color: var(--highlight);
+  border: 1px solid var(--border);
   max-width: 240px;
   cursor: pointer;
   transition-duration: 0.1s;
@@ -213,10 +214,11 @@ export default {
   border-radius: 10px;
 }
 .extra {
-  color: #58a5ff;
+  color: var(--font);
   padding: 5px 10px;
-  background: #15223a;
-  border-radius: 20px;
+  background: var(--highlight);
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 12px;
   margin-right: 2px;
   margin-bottom: 5px;

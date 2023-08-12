@@ -9,13 +9,14 @@
         </div>
         <div class="d-flex align-items-center">
           <p class="me-3">Создано: {{ getProperDate(fields.createdAt) }}</p>
-          <p>Менеджер: {{ fields.name }}</p>
+          <p class="me-3">Менеджер: {{ fields.name }}</p>
+          <p v-if="fields.booked_by">Забронировано: {{ fields.booked_by }}</p>
         </div>
       </div>
       <div class="d-flex justify-content-between align-items-center mb-3">
         <p class="fw-bold fs-3 text-primary">{{ fields.price.toLocaleString('ru') }}₸</p>
         <button
-          class="btn btn-primary me-1"
+          class="btn btn-outline-primary myBtn me-1"
           @click="$router.push(`/update/${id}`)"
         >
           Редактировать объект
@@ -147,7 +148,8 @@ export default {
 
 <style>
 .descriptionBox {
-  background-color: #252d39;
+  background-color: var(--highlight);
+  border: 1px solid var(--border);
   padding: 20px;
   border-radius: 5px;
 }

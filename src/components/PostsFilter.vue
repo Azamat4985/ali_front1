@@ -1,7 +1,7 @@
 <template>
   <div>
-    <p class="filterBtn" v-if="!filterOpened" @click="filterOpened = true">Фильтры ▶</p>
-    <p class="filterBtn" v-if="filterOpened" @click="filterOpened = false">Фильтры ▼</p>
+    <p class="btn btn-outline-primary myBtn" v-if="!filterOpened" @click="filterOpened = true">Фильтры ▶</p>
+    <p class="btn  btn-outline-primary myBtn" v-if="filterOpened" @click="filterOpened = false">Фильтры ▼</p>
 
     <div class="filtersBox mt-2" v-if="filterOpened">
       <div class=" d-flex flex-wrap">
@@ -685,8 +685,8 @@
         </div>
 
         <div class="d-flex">
-          <button class="btn btn-primary me-3" @click="apply">Применить</button>
-          <button class="btn btn-danger" @click="reset">Сбросить</button>
+          <button class="btn btn-outline-success myBtn me-3" @click="apply">Применить</button>
+          <button class="btn btn-outline-danger myBtn" @click="reset">Сбросить</button>
         </div>
 
     </div>
@@ -790,7 +790,8 @@ export default {
 .filtersBox{
   padding: 10px 20px;
   border-radius: 5px;
-  background-color: #252d39;
+  background-color: var(--highlight);
+  border: 1px solid var(--border);
   font-size: 12px;
   width: fit-content;
 }

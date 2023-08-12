@@ -150,7 +150,8 @@ export default {
 .itemBox {
   position: relative;
   padding: 20px 20px 20px 25px;
-  background-color: #21252e;
+  background-color: var(--highlight);
+  border: 1px solid var(--border);
   border-radius: 10px;
 }
 

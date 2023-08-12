@@ -66,7 +66,7 @@ export default {
   background-size: contain;
   right: 20px;
   top: 25%;
-  box-shadow: 0px 0px 10px 10px rgba(33,37,46,1);
+  //box-shadow: 0px 0px 10px 10px rgb(36, 36, 36);
 }
 .noPhoto {
   background-image: url("../assets/no_img.jpeg");
@@ -87,7 +87,8 @@ export default {
   border-bottom-left-radius: 5px;
 }
 .post {
-  background-color: #21252e;
+  background-color: var(--highlight);
+  border: 1px solid var(--border);
   padding: 5px 15px;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;

@@ -38,10 +38,10 @@
         <router-link
           class="navLink d-flex align-items-center mb-3"
           to="/favs"
-          :class="{ 'navLink--active': currentRoute() == 'favourites' }"
+          :class="{ 'navLink--active': currentRoute() == 'Favs' }"
         >
           <img src="../assets/fav.png" width="20" height="20" class="me-3" />
-          <p>Избранные объекты</p>
+          <p style="font-size: 15px">Избранные объекты</p>
         </router-link>
 
         <router-link
@@ -71,6 +71,20 @@
             class="me-3"
           />
           <p>Цепочный обмен</p>
+        </router-link>
+        <router-link
+          class="navLink d-flex align-items-center mb-3"
+          to="/exchange-chain-auto"
+          :class="{ 'navLink--active': currentRoute() == 'Exchange-chain-auto' }"
+          v-if="role == 'admin'"
+        >
+          <img
+            src="../assets/exchange.png"
+            width="20"
+            height="20"
+            class="me-3"
+          />
+          <p>Цепочный обмен (авт.)</p>
         </router-link>
         <!-- <router-link
           class="navLink d-flex align-items-center mb-3"
@@ -157,11 +171,13 @@ export default {
   border-radius: 5px;
   transition-duration: 0.1s;
   cursor: pointer;
+  border: 1px solid transparent;
 }
 .navLink:hover {
-  background-color: #252d39;
+  background-color: var(--highlight);
 }
 .navLink--active {
-  background-color: #252d39;
+  background-color:  var(--highlight);
+  border: 1px solid var(--border);
 }
 </style>

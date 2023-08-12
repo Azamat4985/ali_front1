@@ -35,9 +35,9 @@
               {{ getPercentage(index) }}%
             </p>
           </div>
-          <div
+          <router-link
+            :to="`/post/${item._id}`"
             class="me-2 chainItem__photoClickable"
-            @click="$router.push(`/post/${item._id}`)"
           >
             <div class="noPhoto" v-if="item.mainPhoto_path == ''"></div>
             <div
@@ -46,7 +46,7 @@
               v-if="item.mainPhoto_path != ''"
             ></div>
             <p style="font-size: 12px">{{ item.type }}</p>
-          </div>
+          </router-link>
         </div>
       </div>
     </div>

@@ -1,17 +1,30 @@
 <template>
   <div id="app">
-    <Menu v-if="getLogged" />
-    <loader v-if="!appReady" />
-    <router-view v-if="appReady" />
+    <Menu v-if="getLogged"/>
+    <loader v-if="!appReady"/>
+    <router-view v-if="appReady"/>
 
-    <chain-modal v-if="showChainModal" :id="chainId" />
+    <chain-modal v-if="showChainModal" :id="chainId"/>
 
     <objects-modal
-      v-if="showObjectsModal"
-      :lastObject="lastObject"
-      :isEdit="isEdit"
-      :replaceIndex="replaceIndex"
+        v-if="showObjectsModal"
+        :isEdit="isEdit"
+        :lastObject="lastObject"
+        :replaceIndex="replaceIndex"
     />
+
+    <modal-component v-if="showGeneratedChainModal">
+      <p class="fs-5 mb-2">Введите название цепочки</p>
+      <input v-model="generatedChainName" class="input mb-2 w-100" type="text">
+      <div class="d-flex justify-content-end">
+        <button :disabled="generatedChainSaving" class="btn btn-outline-primary d-flex align-items-center" @click.prevent="saveGeneratedChain">
+          <div v-if="generatedChainSaving" class="spinner-border spinner-border-sm text-light me-2" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p>Сохранить</p>
+        </button>
+      </div>
+    </modal-component>
   </div>
 </template>
 
@@ -19,11 +32,14 @@
 import router from "./router";
 import store from "./store";
 import Menu from "./components/Menu.vue";
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 import ChainModal from "./components/ChainModal.vue";
-import { EventBus } from "./helpers/eventBus";
+import {EventBus} from "./helpers/eventBus";
 import ObjectsModal from "./components/ObjectsModal.vue";
 import Loader from "./components/Loader.vue";
+import ModalComponent from "@/components/ModalComponent.vue";
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -34,10 +50,29 @@ export default {
       isEdit: null,
       replaceIndex: null,
       chainId: null,
+
+      generatedChainName: '',
+      generatedChainSaving: false,
+      showGeneratedChainModal: false,
+      generatedChainObjects: null,
+      generatedChainPercentage: null,
     };
   },
-  components: { Menu, ChainModal, ObjectsModal, Loader },
+  components: {ModalComponent, Menu, ChainModal, ObjectsModal, Loader},
   async mounted() {
+    EventBus.$on('openSaveGeneratedChainModal', (objects, percentage) => {
+      for (const object of objects) {
+        object._id = object.id;
+      }
+      this.generatedChainObjects = objects;
+      this.generatedChainPercentage = percentage;
+      this.showGeneratedChainModal = true;
+    })
+    EventBus.$on('closeSaveGeneratedChainModal', () => {
+      this.generatedChainObjects = null;
+      this.generatedChainPercentage = null;
+      this.showGeneratedChainModal = false;
+    })
     EventBus.$on("openChainModal", (id) => {
       this.chainId = id;
       this.showChainModal = true;
@@ -65,7 +100,7 @@ export default {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email, hash: hash }),
+        body: JSON.stringify({email: email, hash: hash}),
       }).then(async (res) => {
         let result = await res.json();
         if (result.correct == false) {
@@ -76,7 +111,8 @@ export default {
           if (currentRoute == "/") {
             router.push("/posts");
           } else {
-            router.push(currentRoute);
+            router.push(currentRoute).catch(() => {
+            });
           }
           store.commit("setLogged", true);
           store.commit("setEmail", result.email);
@@ -95,6 +131,37 @@ export default {
     ...mapGetters(["getLogged"]),
   },
   methods: {
+    saveGeneratedChain() {
+      if (this.generatedChainName === '') {
+        alert('Введите название цепочки')
+        return;
+      }
+      this.generatedChainSaving = true;
+      let data = {
+        name: this.generatedChainName,
+        probability: this.generatedChainPercentage,
+        objects: this.generatedChainObjects,
+        createdBy: store.getters.getName,
+      }
+
+      axios.post(process.env["VUE_APP_SERVER_URL"] + '/saveChain', {data: JSON.stringify(data)}).then((res) => {
+        if (res.data.info === 200) {
+          this.$toast.success("Успешно сохранено", {timeout: 3000});
+
+          this.generatedChainObjects = null;
+          this.generatedChainPercentage = null;
+          this.showGeneratedChainModal = false;
+
+          EventBus.$emit('loadGeneratedChains')
+        } else if (res.data.info === 'duplicate') {
+          this.$toast.error("Цепочка с таким названием уже существует!", {
+            timeout: 5000,
+          });
+        }
+
+        this.generatedChainSaving = false;
+      })
+    },
     getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
@@ -106,15 +173,15 @@ export default {
 
 <style>
 :root {
-  --bg: #0d1116;
-  --component: #161b22;
+  --bg: #1a1a1a;
+  --component: #242424;
   --btn: #238636;
   --btnHover: #1c692c;
   --link: #58a6ff;
-  --border: #2e3135;
+  --border: #444444;
   --font: #c8d1d9;
   --discard: #f65249;
-  --highlight: #252d39;
+  --highlight: #303030;
   --primary: #58a5ff;
 
   --gold: #d4af34;
@@ -163,6 +230,7 @@ body {
   border: 1px solid var(--link);
   outline: none;
 }
+
 .input:focus {
   border: 1px solid var(--link);
 }
@@ -179,6 +247,12 @@ body {
   padding: 20px 30px;
   border-radius: 10px;
   border: 1px solid var(--border);
+}
+
+.myBtn{
+  background: var(--highlight);
+  border: 1px solid var(--border);
+  color: var(--font);
 }
 
 p {

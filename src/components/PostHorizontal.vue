@@ -1,21 +1,22 @@
 <template>
-  <div
-    class="post me-3 mb-3 d-flex justify-content-between align-items-center"
-    @click="$router.push(`/post/${post._id}`)"
+  <router-link
+      :to="`/post/${post._id}`"
+      class="post me-3 mb-3 d-flex justify-content-between align-items-center"
+
   >
     <div class="d-flex align-items-start">
       <div
-        class="post__img me-3"
-        :style="{ 'background-image': 'url(' + mainPhoto_URL + ')' }"
-        v-if="mainPhoto_URL != null"
+          v-if="mainPhoto_URL != null"
+          :style="{ 'background-image': 'url(' + mainPhoto_URL + ')' }"
+          class="post__img me-3"
       ></div>
 
-      <div class="post__img me-3" v-if="mainPhoto_URL == null"></div>
+      <div v-if="mainPhoto_URL == null" class="post__img me-3"></div>
 
       <div class="d-flex flex-column">
         <p class="fw-bold">
           {{ post.type }}
-          <span class="our ms-2" v-if="post.isOur == 'да'">ali-group</span>
+          <span v-if="post.isOur == 'да'" class="our ms-2">ali-group</span>
           <span v-if="post.isOur == 'нет'" class="fw-normal">
             ➝ {{ post.ex_type }}</span
           >
@@ -23,8 +24,8 @@
         <p class="regionText mb-2">{{ post.region }}, {{ post.city }}</p>
         <div class="d-flex flex-wrap mb-2">
           <span v-for="extra in post.extra" :key="extra" class="extra">{{
-            extra
-          }}</span>
+              extra
+            }}</span>
         </div>
       </div>
     </div>
@@ -32,27 +33,27 @@
     <div class="d-flex flex-column">
       <p class="fs-5 mb-2 fw-bold">{{ post.price.toLocaleString("ru") }} ₸</p>
       <div class="d-flex align-items-center mb-2">
-        <button
-          class="btn btn-primary me-1 flex-grow-1"
-          @click="$router.push(`/update/${post._id}`)"
+        <router-link
+            class="btn btn-outline-success myBtn me-1 flex-grow-1"
+            :to="`/update/${post._id}`"
         >
           Изменить
+        </router-link>
+        <button class="btn btn-outline-primary myBtn me-1" @click.prevent="saveFav">
+          <div :class="{ 'favIcon--active': isFavData }" class="favIcon"></div>
         </button>
-        <button class="btn favBtn me-1" @click="saveFav">
-          <div class="favIcon" :class="{ 'favIcon--active': isFavData }"></div>
-        </button>
-        <button class="btn delBtn" @click="deletePost" v-if="!delete_pending">
+        <button v-if="!delete_pending" class="btn btn-outline-danger myBtn" @click.prevent="deletePost">
           <div class="delIcon"></div>
         </button>
         <button
-          class="btn delBtn"
-          @click="deletePost"
-          v-if="delete_pending"
-          disabled
+            v-if="delete_pending"
+            class="btn btn-outline-danger myBtn"
+            disabled
+            @click="deletePost"
         >
           <div
-            class="spinner-border spinner-border-sm text-white"
-            role="status"
+              class="spinner-border spinner-border-sm text-white"
+              role="status"
           >
             <span class="visually-hidden">Loading...</span>
           </div>
@@ -63,12 +64,13 @@
         <p class="post__date text-end" style="width: 150px">{{ post.name }}</p>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
-  
-  <script>
+
+<script>
 import store from "@/store/index.js";
-import { EventBus } from "../helpers/eventBus.js";
+import {EventBus} from "../helpers/eventBus.js";
+
 export default {
   props: ["post", "myFavs"],
   data() {
@@ -136,7 +138,7 @@ export default {
           let data = await res.json();
           this.delete_pending = false;
           if (data.info == 200) {
-            this.$toast.success("Успешно удалено", { timeout: 3000 });
+            this.$toast.success("Успешно удалено", {timeout: 3000});
             EventBus.$emit("reloadPosts");
           } else if (data.info == "postUsed") {
             this.$toast.error(`Объект используется в цепочке ${data.name}`, {
@@ -149,21 +151,25 @@ export default {
   },
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 .regionText {
   font-size: 12px;
 }
+
 .delBtn {
   background: #313745;
   transition-duration: 0.1s;
 }
+
 .delBtn:hover {
   background: #3e4658;
 }
+
 .delBtn:hover .delIcon {
   background-image: url("../assets/deletePost_active.png");
 }
+
 .delIcon {
   background-image: url("../assets/deletePost.png");
   width: 20px;
@@ -171,9 +177,11 @@ export default {
   background-size: contain;
   transition-duration: 0.1s;
 }
+
 .favIcon--active {
   background-image: url("../assets/fav_active.png") !important;
 }
+
 .favIcon {
   background-image: url("../assets/fav.png");
   width: 20px;
@@ -181,26 +189,34 @@ export default {
   background-size: contain;
   transition-duration: 0.1s;
 }
+
 .favBtn {
   background: #313745;
   transition-duration: 0.1s;
 }
+
 .favBtn:hover {
   background: #3e4658;
 }
+
 .favBtn:hover .favIcon {
   background-image: url("../assets/fav_active.png");
 }
+
 .post {
   padding: 15px;
   border-radius: 10px;
-  background-color: #21252e;
+  background-color: var(--highlight);
+  border: 1px solid var(--border);
   cursor: pointer;
   transition-duration: 0.1s;
+  width: 48%;
 }
+
 .post:hover {
   transform: scale(1.01);
 }
+
 .post__img {
   background-repeat: no-repeat;
   width: 100px;
@@ -211,15 +227,18 @@ export default {
   background-color: var(--bg);
   border-radius: 10px;
 }
+
 .extra {
-  color: #58a5ff;
+  color: var(--font);
   padding: 5px 10px;
-  background: #15223a;
-  border-radius: 20px;
+  background: var(--highlight);
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 12px;
   margin-right: 2px;
   margin-bottom: 5px;
 }
+
 .post__date {
   font-size: 12px;
 }

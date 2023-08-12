@@ -1321,7 +1321,7 @@
             class="d-flex flex-column col-3 me-5 mb-3"
             v-if="fields.ex_type == 'Гостиница'"
           >
-            <label for="adress" class="fs-5 mb-2">Плошадь номеров (м²)</label>
+            <label class="fs-5 mb-2">Плошадь номеров (м²)</label>
             <div class="d-flex align-items-center">
               <p>от</p>
               <input
@@ -1336,6 +1336,14 @@
                 v-model="fields.ex_hotel_rooms_area_to"
               />
             </div>
+          </div>
+          <div
+              class="d-flex flex-column col-3 me-5 mb-3"
+          >
+            <label class="fs-5 mb-2">Забронирован</label>
+            <select class="form-select input" v-model="fields.booked_by">
+              <option class="form-select" v-for="manager in managers" :value="manager">{{manager}}</option>
+            </select>
           </div>
         </div>
 
@@ -1380,12 +1388,14 @@ import router from "@/router";
 import store from "@/store";
 import Loader from "@/components/Loader.vue";
 import { EventBus } from '@/helpers/eventBus';
+import axios from "axios";
 
 export default {
   components: { Money, Loader },
   data() {
     return {
       step: 1,
+      managers: [],
       isReady: false,
       isPending: false,
       money: {
@@ -1567,10 +1577,14 @@ export default {
         client_fio: "",
         client_number_1: '',
         client_number_2: '',
+        booked_by: '',
       },
     };
   },
   async mounted() {
+    axios.post(process.env["VUE_APP_SERVER_URL"] + '/getManagers').then(res => {
+      this.managers = res.data;
+    })
     if (this.$route.params.id) {
       let formdata = new FormData();
       formdata.append("id", this.$route.params.id);

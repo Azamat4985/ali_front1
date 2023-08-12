@@ -99,6 +99,7 @@ export default {
     let formData = new FormData();
     formData.append("role", store.getters.getRole);
     if (this.lastObject == null) {
+      formData.append('isChain', true)
       this.isFirst = true;
       await fetch(`${process.env.VUE_APP_SERVER_URL}/getPosts`, {
         method: "POST",
