@@ -1,12 +1,12 @@
 <template>
   <div class="me-2">
     <div v-if="ready">
-      <a :href="'/post/' + postData._id" v-if="photo == ''">
+      <router-link :to="'/post/' + postData._id" v-if="photo == ''">
         <img src="../assets/no_img.jpeg" width="60" class="rounded main_photo" />
-      </a>
-      <div v-if="photo != ''">
+      </router-link>
+      <router-link :to="'/post/' + postData._id" v-if="photo != ''">
         <img :src="photo" width="60" class="rounded main_photo" />
-      </div>
+      </router-link>
 
       <p style="font-size: 12px;">{{ postData.type }}</p>
     </div>
