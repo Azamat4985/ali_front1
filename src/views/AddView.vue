@@ -85,7 +85,7 @@
             <select class="input" id="region" v-model="fields.region">
               <option
                 :value="region"
-                v-for="region in getRegions()"
+                v-for="region in getRegions"
                 :key="region"
               >
                 {{ region }}
@@ -96,7 +96,7 @@
           <div class="d-flex flex-column col-5 me-5 mb-3">
             <label for="city" class="fs-5 mb-2">Город</label>
             <select class="input" id="city" v-model="fields.city">
-              <option :value="city" v-for="city in getCities()" :key="city">
+              <option :value="city" v-for="city in getCities" :key="city">
                 {{ city }}
               </option>
             </select>
@@ -116,7 +116,7 @@
             <select class="input" id="district" v-model="fields.district">
               <option
                 :value="district"
-                v-for="district in getDisctrics()"
+                v-for="district in getDistricts"
                 :key="district"
               >
                 {{ district }}
@@ -685,7 +685,7 @@
             <select class="input" id="region" v-model="fields.ex_region">
               <option
                 :value="region"
-                v-for="region in getRegions()"
+                v-for="region in getRegions"
                 :key="region"
               >
                 {{ region }}
@@ -696,7 +696,7 @@
           <div class="d-flex flex-column col-3 me-5 mb-3">
             <label for="city" class="fs-5 mb-2">Город</label>
             <select class="input" id="city" v-model="fields.ex_city">
-              <option :value="city" v-for="city in getCities()" :key="city">
+              <option :value="city" v-for="city in getExCities" :key="city">
                 {{ city }}
               </option>
             </select>
@@ -716,7 +716,7 @@
             <select class="input" id="district" v-model="fields.ex_district">
               <option
                 :value="district"
-                v-for="district in getDisctrics()"
+                v-for="district in getExDistricts"
                 :key="district"
               >
                 {{ district }}
@@ -1418,8 +1418,8 @@ export default {
         "Гостиница",
       ],
       districts: {
-        Астана: ["Сарыарка", "Байконур", "Алматы", "Есиль"],
-        Алматы: [
+        "Астана": ["Сарыарка", "Байконур", "Алматы", "Есиль"],
+        "Алматы": [
           "Алатауский",
           "Алмалинский",
           "Ауэзовский",
@@ -1429,8 +1429,8 @@ export default {
           "Наурызбайский",
           "Турксибский",
         ],
-        Шымкент: ["Абайский", "Аль-Фарабийский", "Енбекшинский", "Каратауский"],
-        Караганда: [
+        "Шымкент": ["Абайский", "Аль-Фарабийский", "Енбекшинский", "Каратауский"],
+        "Караганда": [
           "Казыбекбийский",
           "Майкудук",
           "Район Алихана Бокейханова",
@@ -1638,6 +1638,51 @@ export default {
       this.isReady = true;
     }
   },
+  computed: {
+    getRegions() {
+      let arr = [];
+      for (const key in regions) {
+        arr.push(Object.keys(regions[key])[0]);
+      }
+      return arr;
+    },
+    getCities() {
+      for (const key in regions) {
+        if (Object.keys(regions[key])[0] == this.fields.region) {
+          this.fields.city = regions[key][this.fields.region][0];
+          return regions[key][this.fields.region];
+        }
+      }
+    },
+    getExCities(){
+      for (const key in regions) {
+        if (Object.keys(regions[key])[0] == this.fields.ex_region) {
+          this.fields.ex_city = regions[key][this.fields.ex_region][0];
+          return regions[key][this.fields.ex_region];
+        }
+      }
+    },
+    getExDistricts(){
+      return this.districts[this.fields.ex_city];
+    },
+    getDistricts() {
+      return this.districts[this.fields.city];
+    },
+  },
+  watch: {
+    fields: {
+      handler(newVal, oldVal){
+        if(!this.districts[newVal.city]){
+          this.fields.district = '';
+        }
+        if(!this.districts[newVal.ex_city]){
+          this.fields.ex_district = '';
+        }
+
+      },
+      deep: true
+    }
+  },
   methods: {
     getStep() {
       if (this.fields.isOur && this.step == 3) {
@@ -1739,24 +1784,7 @@ export default {
         }
       }
     },
-    getRegions() {
-      let arr = [];
-      for (const key in regions) {
-        arr.push(Object.keys(regions[key])[0]);
-      }
-      return arr;
-    },
-    getCities() {
-      for (const key in regions) {
-        if (Object.keys(regions[key])[0] == this.fields.region) {
-          this.fields.city = regions[key][this.fields.region][0];
-          return regions[key][this.fields.region];
-        }
-      }
-    },
-    getDisctrics() {
-      return this.districts[this.fields.city];
-    },
+
     onMainUpload(e) {
       console.log("ok");
       if (this.fields.mainPhoto == null) {
