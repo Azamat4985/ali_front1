@@ -73,7 +73,7 @@ export default {
       axios.post(process.env["VUE_APP_SERVER_URL"] + '/getAutoChains', {
       }).then((res) => {
         this.chains = res.data.chains.sort((a, b) => {
-          return b - a
+          return b.percentage - a.percentage
         })
 
         this.percentage = 80;
@@ -85,7 +85,7 @@ export default {
     this.ready = false;
     axios.post(process.env["VUE_APP_SERVER_URL"] + '/getAutoChains').then((res) => {
       this.chains = res.data.chains.sort((a, b) => {
-        return b - a
+        return b.percentage - a.percentage
       })
 
       this.ready = true;
