@@ -9,7 +9,7 @@
                 chain.percentage < 80,
               percentage__bad: chain.percentage < 50,
             }">{{chain.percentage}}%</span></p>
-      <button class="btn btn-sm btn-outline-success myBtn rounded" @click.prevent="saveChain">Сохранить цепочку</button>
+<!--      <button class="btn btn-sm btn-outline-success myBtn rounded" @click.prevent="saveChain">Сохранить цепочку</button>-->
     </div>
     <div class="d-flex align-items-center">
       <div

@@ -93,7 +93,7 @@ export default {
     let hash = this.getCookie("hash");
     let email = this.getCookie("email");
 
-    if (hash != undefined && email != undefined) {
+    if (hash !== undefined && email !== undefined) {
       await fetch(`${process.env.VUE_APP_SERVER_URL}/checkHash`, {
         method: "POST",
         headers: {
@@ -102,8 +102,9 @@ export default {
         },
         body: JSON.stringify({email: email, hash: hash}),
       }).then(async (res) => {
+        console.log(res);
         let result = await res.json();
-        if (result.correct == false) {
+        if (result.correct === false) {
           router.push("/auth");
           this.appReady = true;
         } else {

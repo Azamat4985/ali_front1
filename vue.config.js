@@ -1,12 +1,12 @@
-// const { defineConfig } = require('@vue/cli-service')
-// module.exports = defineConfig({
-//   transpileDependencies: true,
-//   publicPath: '',
-//   devServer: {
-//     historyApiFallback: true
-//   }
-// })
+const { defineConfig } = require('@vue/cli-service')
+module.exports = defineConfig({
+  transpileDependencies: true,
+  publicPath: '',
+  devServer: {
+    historyApiFallback: true
+  }
+})
 
-module.exports = {
-  publicPath: '/ali_front/'
-}
+// module.exports = {
+//   publicPath: '/ali_front/'
+// }
